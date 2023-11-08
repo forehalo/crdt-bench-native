@@ -3,6 +3,7 @@ use std::collections::HashMap;
 pub mod automerge;
 pub mod diamond_type;
 pub mod loro;
+pub mod yocto;
 pub mod yrs;
 pub trait Crdt: Sized {
     type Version;

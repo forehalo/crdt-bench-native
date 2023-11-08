@@ -3,7 +3,8 @@ use rand::{rngs::StdRng, Rng, SeedableRng};
 use std::{collections::HashMap, fmt::Write};
 
 use crate::{
-    automerge::get_automerge_actions, merge, AutomergeDoc, Crdt, DiamondTypeDoc, Loro, YrsDoc,
+    automerge::get_automerge_actions, merge, AutomergeDoc, Crdt, DiamondTypeDoc, Loro, YOctoDoc,
+    YrsDoc,
 };
 
 fn gen_report<C: Crdt>(gc: bool, compression: bool) -> Option<usize> {
@@ -167,13 +168,14 @@ impl ReportTable {
         let loro = self.0.get(Loro::name()).unwrap();
         let automerge = self.0.get(AutomergeDoc::name()).unwrap();
         let diamond_type = self.0.get(DiamondTypeDoc::name()).unwrap();
+        let y_octo = self.0.get(YOctoDoc::name()).unwrap();
         let yrs = self.0.get(YrsDoc::name()).unwrap();
-        md.push_str("|     |  loro  | automerge | diamond-type | yrs |\n");
-        md.push_str("|  ----  | ----  |  ----  | ----  |  ----  |");
+        md.push_str("|     |  loro  | automerge | diamond-type | y_octo | yrs |\n");
+        md.push_str("|  ----  | ----  |  ----  | ----  |  ----  |  ----  |");
 
         for (title, index) in [("", 0), ("gc", 1), ("compress", 2), ("gc & compress", 3)] {
             md.push_str(&format!("\n|{}|", title));
-            for crdt in [loro, automerge, diamond_type, yrs] {
+            for crdt in [loro, automerge, diamond_type, y_octo, yrs] {
                 let size = crdt[index]
                     .map(|s| s.to_string())
                     .unwrap_or_else(|| "x".to_string());
@@ -204,6 +206,7 @@ fn bench_document_size(parallel: bool) -> ReportTable {
     let mut report_table = ReportTable::new();
     per_crdt::<Loro>(&mut report_table, parallel);
     per_crdt::<AutomergeDoc>(&mut report_table, parallel);
+    per_crdt::<YOctoDoc>(&mut report_table, parallel);
     per_crdt::<YrsDoc>(&mut report_table, parallel);
     per_crdt::<DiamondTypeDoc>(&mut report_table, parallel);
     report_table
