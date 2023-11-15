@@ -67,6 +67,7 @@ const CRATES = [
   "automerge",
   "loro",
   "diamond-type",
+  "yocto",
   "yrs",
 ] as const;
 
