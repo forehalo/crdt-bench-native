@@ -29,6 +29,7 @@ impl Crdt for YOctoDoc {
             options.client_id = client_id.unwrap();
         }
         let doc = Doc::with_options(options);
+        doc.publisher.stop();
         YOctoDoc {
             map: doc.get_or_create_map("map").unwrap(),
             list: doc.get_or_create_array("list").unwrap(),

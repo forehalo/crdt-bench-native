@@ -19,7 +19,7 @@ impl Crdt for Loro {
         "loro"
     }
 
-    fn create(gc: bool, compression: bool) -> Self {
+    fn create(gc: bool, compression: bool, client_id: Option<u64>) -> Self {
         let doc = LoroDoc::new_auto_commit();
         let text = doc.get_text("text");
         let map = doc.get_map("map");
