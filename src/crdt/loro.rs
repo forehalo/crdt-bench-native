@@ -19,7 +19,7 @@ impl Crdt for Loro {
         "loro"
     }
 
-    fn create(gc: bool, compression: bool, client_id: Option<u64>) -> Self {
+    fn create(gc: bool, compression: bool, _client_id: Option<u64>) -> Self {
         let doc = LoroDoc::new_auto_commit();
         let text = doc.get_text("text");
         let map = doc.get_map("map");
@@ -35,11 +35,11 @@ impl Crdt for Loro {
     }
 
     fn text_insert(&mut self, pos: usize, text: &str) {
-        self.text.insert_(pos, text).unwrap();
+        self.text.insert(pos, text).unwrap();
     }
 
     fn text_del(&mut self, pos: usize, len: usize) {
-        self.text.delete_(pos, len).unwrap();
+        self.text.delete(pos, len).unwrap();
     }
 
     fn get_text(&mut self) -> Box<str> {
@@ -51,7 +51,7 @@ impl Crdt for Loro {
     }
 
     fn list_insert(&mut self, pos: usize, num: i32) {
-        self.list.insert_(pos, num.into()).unwrap();
+        self.list.insert(pos, num).unwrap();
     }
 
     fn get_list(&mut self) -> Vec<i32> {
@@ -60,7 +60,7 @@ impl Crdt for Loro {
     }
 
     fn map_insert(&mut self, key: &str, num: i32) {
-        self.map.insert_(key, num.into()).unwrap();
+        self.map.insert(key, num).unwrap();
     }
 
     fn get_map(&mut self) -> std::collections::HashMap<String, i32> {
@@ -94,11 +94,11 @@ impl Crdt for Loro {
     }
 
     fn list_del(&mut self, pos: usize, len: usize) {
-        self.list.delete_(pos, len).unwrap();
+        self.list.delete(pos, len).unwrap();
     }
 
     fn map_del(&mut self, key: &str) {
-        self.map.delete_(key).unwrap();
+        self.map.delete(key).unwrap();
     }
 
     fn gc(&self) -> Result<bool, bool> {

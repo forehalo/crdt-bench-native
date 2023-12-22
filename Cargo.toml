@@ -7,18 +7,18 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
-criterion = "0.4.0"
-loro-internal = { path = "../loro/crates/loro-internal" }
+criterion = "0.5"
+loro-internal = { git = "https://github.com/loro-dev/loro.git", branch = "main", package = "loro-internal" }
 arbitrary = { version = "1.2.0", features = ["derive"] }
-enum-as-inner = "0.5.1"
+enum-as-inner = "0.6"
 flate2 = "1.0.25"
 serde_json = "1.0.89"
-yrs = "0.16.2"
-automerge = "0.3.0"
+yrs = "0.17"
+automerge = "0.5"
 diamond-types = "1.0.0"
 arref = "0.1.0"
 indicatif = "0.17.3"
-y-octo = { path = "../y-octo/y-octo", features = ["large_refs"] }
+y-octo = { path = "../y-octo/y-octo", features = ["large_refs", "bench"] }
 
 [profile.release]
 debug = true
@@ -32,7 +32,7 @@ name = "loro"
 harness = false
 
 [[bench]]
-name = "yocto"
+name = "y-octo"
 harness = false
 
 [[bench]]

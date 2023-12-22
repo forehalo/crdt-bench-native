@@ -93,7 +93,7 @@ impl Crdt for YrsDoc {
         let encoded = self
             .doc
             .transact_mut()
-            .encode_state_as_update_v2(&Default::default());
+            .encode_state_as_update_v1(&Default::default());
 
         if self.compression {
             let mut ans = vec![];
@@ -119,7 +119,7 @@ impl Crdt for YrsDoc {
         };
         self.doc
             .transact_mut()
-            .apply_update(Update::decode_v2(update).unwrap())
+            .apply_update(Update::decode_v1(update).unwrap())
     }
 
     fn version(&self) -> Self::Version {
@@ -129,15 +129,15 @@ impl Crdt for YrsDoc {
     fn merge(&mut self, other: &mut Self) {
         let a = self.doc.transact_mut().before_state().clone();
         let b = other.doc.transact_mut().before_state().clone();
-        let a_to_b = self.doc.transact_mut().encode_state_as_update_v2(&b);
-        let b_to_a = other.doc.transact_mut().encode_state_as_update_v2(&a);
+        let a_to_b = self.doc.transact_mut().encode_state_as_update_v1(&b);
+        let b_to_a = other.doc.transact_mut().encode_state_as_update_v1(&a);
         self.doc
             .transact_mut()
-            .apply_update(Update::decode_v2(&b_to_a).unwrap());
+            .apply_update(Update::decode_v1(&b_to_a).unwrap());
         other
             .doc
             .transact_mut()
-            .apply_update(Update::decode_v2(&a_to_b).unwrap());
+            .apply_update(Update::decode_v1(&a_to_b).unwrap());
     }
 
     fn gc(&self) -> Result<bool, bool> {

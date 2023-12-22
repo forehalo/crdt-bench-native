@@ -29,16 +29,17 @@ async function readCrate(crate: string): Promise<Task[]> {
   const crateResultPath = resolve(CRITERION_DIR, crate);
   if (!existsSync(crateResultPath)) {
     throw new Error(
-      "crate not found: " + crate +
-        ". Run cargo bench first before generating report.",
+      "crate not found: " +
+        crate +
+        ". Run cargo bench first before generating report."
     );
   }
 
   const tasks: Task[] = [];
   for await (const dirEntry of Deno.readDir(crateResultPath)) {
-    if (dirEntry.isDirectory) {
+    if (dirEntry.isDirectory && dirEntry.name !== "report") {
       tasks.push(
-        await readTask(resolve(crateResultPath, dirEntry.name), crate),
+        await readTask(resolve(crateResultPath, dirEntry.name), crate)
       );
     }
   }
@@ -47,12 +48,12 @@ async function readCrate(crate: string): Promise<Task[]> {
 }
 
 async function readTask(path: string, crate: string): Promise<Task> {
-  const taskName: string =
-    JSON.parse(await Deno.readTextFile(resolve(path, "new", "benchmark.json")))
-      .full_id;
+  const taskName: string = JSON.parse(
+    await Deno.readTextFile(resolve(path, "new", "benchmark.json"))
+  ).full_id;
 
   const estimate: EstimateReport = JSON.parse(
-    await Deno.readTextFile(resolve(path, "new", "estimates.json")),
+    await Deno.readTextFile(resolve(path, "new", "estimates.json"))
   );
 
   return {
@@ -63,13 +64,7 @@ async function readTask(path: string, crate: string): Promise<Task> {
   };
 }
 
-const CRATES = [
-  "automerge",
-  "loro",
-  "diamond-type",
-  "yocto",
-  "yrs",
-] as const;
+const CRATES = ["automerge", "loro", "diamond-type", "y-octo", "yrs"] as const;
 
 const results = await Promise.all(CRATES.map((x) => readCrate(x)));
 
@@ -97,17 +92,17 @@ console.log(`| :---- | ${CRATES.map(() => ":----").join(" | ")} |`);
 const tasks = Object.keys(report);
 tasks.sort();
 for (const task of tasks) {
-  console.log(`| ${task} | ${
-    CRATES.map((x) => {
+  console.log(
+    `| ${task} | ${CRATES.map((x) => {
       const time = report[task][x].time;
       const timeStdErr = report[task][x].timeStdErr;
       if (time > 1) {
         return `${time.toFixed(2)} ± ${timeStdErr.toFixed(2)} ms`;
       } else {
-        return `${(time * 1000).toFixed(2)} ± ${
-          (timeStdErr * 1000).toFixed(2)
-        } us`;
+        return `${(time * 1000).toFixed(2)} ± ${(timeStdErr * 1000).toFixed(
+          2
+        )} us`;
       }
-    }).join(" | ")
-  } |`);
+    }).join(" | ")} |`
+  );
 }
